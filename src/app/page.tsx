@@ -1,91 +1,99 @@
-import Image from 'next/image'
+
+'use client';
+import { Flex, Heading, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react'
 import { Inter } from 'next/font/google'
-import styles from './page.module.css'
-
+import { ChakraProvider } from '@chakra-ui/react'
+import RequisitionDetails from '@/components/Requitition/RequisitionDetails';
+import JobDetails from '@/components/JobDetails/JobDetails';
+import InterviewDetails from '@/components/InterviewDetails/InterviewDetails';
+import Card from '@/components/subcomponents/Card';
+import { useState } from 'react';
 const inter = Inter({ subsets: ['latin'] })
-
+export type InputType = {
+   title: string,
+    opening: string,
+    Gender: string,
+    Urgency: string,
+    jobtitle: string,
+    jobdetails: string,
+    joblocation: string,
+    Interview: string,
+    Duration: string,
+    Location: string,
+}
 export default function Home() {
+   const [activeTab, setActiveTab] = useState(0);
+
+  const handleNext = () => {
+    setActiveTab((prevTab) => Math.min(prevTab + 1, 2));
+  };
+
+  const handlePrevious = () => {
+    setActiveTab((prevTab) => Math.max(prevTab - 1, 0));
+  };
+  const [inputValue, setInputValue] = useState<InputType>({
+    title: "",
+    opening: "",
+    Gender: "",
+    Urgency: "",
+    jobtitle: "",
+    jobdetails: "",
+    joblocation: "",
+    Interview: "",
+    Duration: "",
+    Location: "",
+  });
+
+const handleInputChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = event.target;
+  console.log("name: " + name,"value: " + value);
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
+  };
+
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <ChakraProvider>
+      <main >
+        <Flex px="300px" flexDirection="column" gap="30px" mt="30px">
+          <Flex w="full">
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
+            <Heading as="h3" size="lg" w="full" >Create Candidate Requisition</Heading>
 
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+          </Flex>
+          <Flex w="full">
+            <Tabs w="full" index={activeTab}>
+              <TabList>
+                <Tab>Requisition Details</Tab>
+                <Tab>Job Details</Tab>
+                <Tab>Interview Settings</Tab>
+              </TabList>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
+              <TabPanels>
+                <TabPanel>
+                  <RequisitionDetails handleInputChange={handleInputChange} handleNext={handleNext} />
+                </TabPanel>
+                <TabPanel>
+                  <JobDetails handleInputChange={handleInputChange} handleNext={handleNext} handlePrevious={handlePrevious} />
+                </TabPanel>
+                <TabPanel>
+                  <InterviewDetails handleInputChange={handleInputChange} handleNext={handleNext } handlePrevious={handlePrevious} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+            <Flex position="relative" top="60px" zIndex="5px" >
+              <Card inputValue={ inputValue} />
+            </Flex>
+          </Flex>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        </Flex>
+
+
+
+      </main>
+    </ChakraProvider>
   )
 }
